@@ -1,22 +1,29 @@
-from typing import List, Dict, Any, Optional
-from datetime import datetime
-import uuid
-from app.services.sap_service import sap_service
-
-class BusinessAgent:
-    async def process(self, query: str) -> Dict[str, Any]:
-        if "sales" in query.lower():
-            data = await sap_service.get_sales_data()
-            return {"id": str(uuid.uuid4()), "role": "assistant", "content": "Sales data:", "content_type": "chart", "data": data, "timestamp": datetime.now()}
-        elif "inventory" in query.lower():
-            data = await sap_service.get_inventory_stock()
-            return {"id": str(uuid.uuid4()), "role": "assistant", "content": "Stock levels:", "content_type": "table", "data": data, "timestamp": datetime.now()}
-        return {"id": str(uuid.uuid4()), "role": "assistant", "content": f"You asked about {query}", "content_type": "text", "timestamp": datetime.now()}
+from typing import Dict, Any
+from app.agents.business_agents import SalesAgent, InventoryAgent, GeneralAgent
+from app.prompts.templates import SYSTEM_ORCHESTRATOR_PROMPT
 
 class AIOrchestrator:
     def __init__(self):
-        self.agent = BusinessAgent()
+        self.agents = {
+            "sales": SalesAgent(),
+            "inventory": InventoryAgent(),
+            "general": GeneralAgent()
+        }
+
     async def route_request(self, query: str) -> Dict[str, Any]:
-        return await self.agent.process(query)
+        """
+        Routes the request based on intent.
+        In production, this would use an LLM for classification.
+        """
+        q = query.lower()
+        if any(w in q for w in ["sales", "revenue", "trend"]):
+            agent_key = "sales"
+        elif any(w in q for w in ["inventory", "stock", "warehouse"]):
+            agent_key = "inventory"
+        else:
+            agent_key = "general"
+
+        agent = self.agents[agent_key]
+        return await agent.process(query)
 
 orchestrator = AIOrchestrator()
