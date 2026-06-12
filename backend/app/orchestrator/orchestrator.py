@@ -1,25 +1,23 @@
 from typing import Dict, Any
-from app.agents.business_agents import SalesAgent, InventoryAgent, GeneralAgent
-from app.prompts.templates import SYSTEM_ORCHESTRATOR_PROMPT
+from app.agents.business_agents import SalesAgent, InventoryAgent, ProductionAgent, GeneralAgent
 
 class AIOrchestrator:
     def __init__(self):
         self.agents = {
             "sales": SalesAgent(),
             "inventory": InventoryAgent(),
+            "production": ProductionAgent(),
             "general": GeneralAgent()
         }
 
     async def route_request(self, query: str) -> Dict[str, Any]:
-        """
-        Routes the request based on intent.
-        In production, this would use an LLM for classification.
-        """
         q = query.lower()
-        if any(w in q for w in ["sales", "revenue", "trend"]):
+        if any(w in q for w in ["sales", "revenue", "order"]):
             agent_key = "sales"
-        elif any(w in q for w in ["inventory", "stock", "warehouse"]):
+        elif any(w in q for w in ["inventory", "stock", "warehouse", "material"]):
             agent_key = "inventory"
+        elif any(w in q for w in ["production", "manufactur"]):
+            agent_key = "production"
         else:
             agent_key = "general"
 
