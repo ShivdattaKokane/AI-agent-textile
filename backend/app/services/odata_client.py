@@ -21,6 +21,9 @@ class ODataClient:
         if settings.SAP_API_KEY:
             self.headers["APIKey"] = settings.SAP_API_KEY
 
+        if not settings.SAP_VERIFY_SSL:
+            logger.warning("SSL verification is disabled for SAP ODataClient. This is only recommended for development.")
+
     async def _call_with_retry(self, method: str, url: str, **kwargs) -> httpx.Response:
         max_retries = 3
         backoff_factor = 2

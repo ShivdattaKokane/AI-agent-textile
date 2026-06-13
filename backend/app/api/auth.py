@@ -29,7 +29,6 @@ async def login(login_data: LoginRequest):
         sap_response = await auth_service.login(login_data.username, login_data.password)
 
         if sap_response.success:
-            # Requirements: Store the exact username entered by the user
             return {
                 "access_token": create_access_token(subject=login_data.username),
                 "token_type": "bearer"
