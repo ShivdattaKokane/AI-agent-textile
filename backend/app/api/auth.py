@@ -18,8 +18,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
         username: str = payload.get("sub")
         if username:
-            # For now, we return a generic User object with the SAP username
-            return User(id=username, email=f"{username}@example.com", full_name=username, role="User")
+            return User(id=username, username=username, full_name=username, role="User")
     except JWTError:
         pass
     raise HTTPException(status_code=401, detail="Unauthorized")
@@ -27,11 +26,12 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
 @router.post("/login", response_model=Token)
 async def login(login_data: LoginRequest):
     try:
-        sap_response = await auth_service.login(login_data.email, login_data.password)
+        sap_response = await auth_service.login(login_data.username, login_data.password)
 
         if sap_response.success:
+            # Requirements: Store the exact username entered by the user
             return {
-                "access_token": create_access_token(subject=sap_response.username),
+                "access_token": create_access_token(subject=login_data.username),
                 "token_type": "bearer"
             }
         else:

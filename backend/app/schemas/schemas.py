@@ -8,12 +8,13 @@ class Token(BaseModel):
 
 class User(BaseModel):
     id: str
-    email: EmailStr
+    username: str
+    email: Optional[str] = None
     full_name: str
     role: str
 
 class LoginRequest(BaseModel):
-    email: EmailStr
+    username: str
     password: str
 
 class ChatRequest(BaseModel):
