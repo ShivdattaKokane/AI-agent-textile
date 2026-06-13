@@ -16,8 +16,7 @@ const Login: React.FC = () => {
     setError(null);
     setIsSubmitting(true);
     try {
-      // Backend expects email/password in LoginRequest but we map username to email
-      const res = await api.post('/login', { email: data.username, password: data.password });
+      const res = await api.post('/login', { username: data.username, password: data.password });
       await login(res.data.access_token);
       navigate('/');
     } catch (e: any) {
