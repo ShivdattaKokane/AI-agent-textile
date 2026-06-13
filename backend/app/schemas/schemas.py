@@ -39,3 +39,13 @@ class DashboardData(BaseModel):
     kpis: List[DashboardKPI]
     recent_activity: List[Dict[str, Any]]
     alerts: List[Dict[str, Any]]
+
+class SAPLoginPayload(BaseModel):
+    message: str
+    errors: List[str]
+
+class SAPLoginResponse(BaseModel):
+    success: bool
+    username: str
+    payload: SAPLoginPayload
+    timestamp: datetime
