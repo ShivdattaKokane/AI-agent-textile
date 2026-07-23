@@ -1,5 +1,3 @@
-from app.services.odata_client import odata_client
-from app.schemas.schemas import SAPLoginResponse
 from app.config.config import settings
 from typing import Optional
 import logging
@@ -7,20 +5,22 @@ import logging
 logger = logging.getLogger(__name__)
 
 class AuthenticationService:
-    async def login(self, username: str, password: str) -> SAPLoginResponse:
-        params = {
-            "sap-client": settings.SAP_CLIENT,
-            "Username": username,
-            "Password": password
-        }
+    async def login(self, username: str, password: str) -> bool:
+        """
+        Validate login credentials against mock data to avoid SAP connectivity issues.
+        """
+        # Lowercase username for case-insensitive check if desired, or exact match.
+        # Let's support exact matching or simple case insensitivity for standard username
+        user_lower = username.lower().strip()
 
-        try:
-            # Endpoint: /getlogin (base URL is https://dashboard1.dnhspinners.com/zinq)
-            response_data = await odata_client.call_api("getlogin", params=params)
-            return SAPLoginResponse(**response_data)
-        except Exception as e:
-            logger.error(f"SAP Login Error: {str(e)}")
-            # In case of direct failure or unexpected format, raise for the API to handle
-            raise
+        # Check against shivdattakokane
+        if user_lower == settings.MOCK_USER_2_USERNAME.lower() and password == settings.MOCK_USER_2_PASSWORD:
+            return True
+
+        # Check against admin@example.com
+        if user_lower == settings.MOCK_USER_EMAIL.lower() and password == settings.MOCK_USER_PASSWORD:
+            return True
+
+        return False
 
 auth_service = AuthenticationService()

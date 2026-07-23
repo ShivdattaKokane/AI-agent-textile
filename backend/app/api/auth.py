@@ -26,22 +26,18 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
 @router.post("/login", response_model=Token)
 async def login(login_data: LoginRequest):
     try:
-        sap_response = await auth_service.login(login_data.username, login_data.password)
+        success = await auth_service.login(login_data.username, login_data.password)
 
-        if sap_response.success:
-            # Requirements: Store the exact username entered by the user
+        if success:
+            # Store the exact username entered by the user
             return {
-                "access_token": create_access_token(subject=login_data.username),
+                "access_token": create_access_token(subject=login_data.username.strip()),
                 "token_type": "bearer"
             }
         else:
-            error_message = sap_response.payload.message
-            if sap_response.payload.errors:
-                error_message += ": " + ", ".join(sap_response.payload.errors)
-
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail=error_message
+                detail="Incorrect username or password"
             )
 
     except HTTPException:

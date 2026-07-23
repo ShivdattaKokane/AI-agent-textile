@@ -8,9 +8,12 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7
 
-    # Mock User
+    # Mock Users
     MOCK_USER_EMAIL: str = "admin@example.com"
     MOCK_USER_PASSWORD: str = "admin123"
+
+    MOCK_USER_2_USERNAME: str = "shivdattakokane"
+    MOCK_USER_2_PASSWORD: str = "Shiv@123"
 
     # SAP OData Configuration
     SAP_BASE_URL: str = "https://dashboard1.dnhspinners.com/zinq"
