@@ -31,14 +31,14 @@ const Login: React.FC = () => {
     <Container maxWidth="xs" sx={{ mt: 10 }}>
       <Paper sx={{ p: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <Typography variant="h5" sx={{ mb: 3 }}>Enterprise AI Assistant</Typography>
-        <Typography variant="subtitle1" sx={{ mb: 2 }}>Login with SAP Credentials</Typography>
+        <Typography variant="subtitle1" sx={{ mb: 2 }}>Login with Enterprise Credentials</Typography>
 
         {error && <Alert severity="error" sx={{ width: '100%', mb: 2 }}>{error}</Alert>}
 
         <form onSubmit={handleSubmit(onSubmit)} style={{ width: '100%' }}>
           <TextField
             fullWidth
-            label="SAP Username"
+            label="Username"
             {...register('username')}
             sx={{ mb: 2 }}
             disabled={isSubmitting}
